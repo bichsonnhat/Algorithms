@@ -1,2 +1,2 @@
-# CP
-CP by BichSonNhat
+algorithm
+My C++ codes for algorithms in SPOJ, Codeforces, LQDOJ, NBKOJ,... 
