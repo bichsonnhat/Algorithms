@@ -1,3 +1,0 @@
-Algorithm
-
-My C++ codes for algorithms in SPOJ, Codeforces, LQDOJ, NBKOJ,... 

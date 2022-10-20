@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+#define TASK "TASK"
+#define X first
+#define Y second
+
+const int N = 1e4 + 5;
+vector <int> adj[N];
+int n, m, low[N], num[N], time_DFS;
+int bridge;
+bool joint[N];
+
+void DFS(int u, int par){
+    int child = 0;
+    low[u] = num[u] = ++time_DFS;
+    for (auto v : adj[u]){
+        if (v == par) continue;
+        if (!num[v]){
+            DFS(v, u);
+            low[u] = min(low[u], low[v]);
+            ++child;
+            bridge += (low[v] == num[v]);
+            if (u == par){
+                if (child > 1) joint[u] = true;
+            } else if (low[v] >= num[u]) joint[u] = true;
+        } else low[u] = min(low[u], num[v]);
+    }
+}
+void Solve(){
+    cin >> n >> m;
+    while (m --> 0){
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for (int i = 1; i <= n; ++i)
+        if (!num[i]) DFS(i, i);
+    int cntJoint = 0;
+    for (int i = 1; i <= n; ++i)
+        cntJoint += joint[i];
+    cout << cntJoint << ' ' << bridge << '\n';
+}
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen(TASK".INP","r",stdin);
+        freopen(TASK".OUT","w",stdout);
+    #endif
+    int ntests = 1;
+//    cin >> ntests;
+    while (ntests--) Solve();
+    return 0;
+}

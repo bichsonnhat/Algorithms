@@ -1,0 +1,80 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 3333;
+int k, n;
+long long res;
+int f[N][N], sub[N][2], ans[4];
+bool gone[4];
+string a, b;
+
+//f[i][j] 
+//Xâu con chung liên tiếp dài nhất kết thúc tại a[i] và b[j]?
+void dp() {
+    for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= n; j++) 
+        if (abs(a[i] - b[j]) <= k)
+            f[i][j] = f[i - 1][j - 1] + 1;
+}
+
+bool check(int i, int j, int end) {
+    // cout << i << " " << j << " " << end << " " << f[end][j] << "\n";
+    // cout << (f[end][j] >= j - i + 1) << "\n";
+    return (f[j][end] > j - i);
+}
+
+//(1.. i) (i + 1, j) (j + 1, n)
+void Try(int id) {
+    if (id > 3) {
+        int end = 0;
+        // cout << res << " ";
+        for (int i = 1; i <= 3; i++) {
+            end += sub[ans[i]][1] - sub[ans[i]][0] + 1;
+            if (check(sub[ans[i]][0], sub[ans[i]][1], end) == false) {return;}
+        }
+        // for (int i = 1; i <= 3; i++) cout << ans[i] << " ";
+        // cout << endl;
+        res++;
+        // cout << res << "\n";
+        return;
+    }
+
+    for (int i = 1; i <= 3; i++) {
+        if (!gone[i]) {
+            gone[i] = true;
+            ans[id] = i;
+            Try(id + 1);
+            gone[i] = false;
+        }
+    }
+}
+
+int main() {
+    scanf("%d", &k);
+    cin >> a >> b;
+    a = " " + a;
+    b = " " + b;
+    n = a.size() - 1;
+
+    dp();
+    //Cut
+    // int res = 0;
+    int trueRes = 0;
+    for (int i = 1; i <= n; i++) {
+        //(1..i) (i + 1..j) (j + 1.. n)
+        for (int j = i + 1; j < n; j++) {
+            // cout << i << " " << j << "\n";
+            
+            // cout << 1 << " " << i << "|" << i + 1 << " " << j << "|" << j + 1 << " " << n <<"\n";;
+
+            sub[1][0] = 1, sub[1][1] = i;
+            sub[2][0] = i + 1, sub[2][1] = j;
+            sub[3][0] = j + 1, sub[3][1] = n;
+            long long prevRes = res;
+            Try(1);
+            trueRes += prevRes != res;
+        }
+    }
+    // cout << f[1][2] << "\n";
+    printf("%d\n", trueRes);
+}
